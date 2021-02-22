@@ -19,24 +19,23 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+app.get("/api/timestamp/", (req, res) => {
+  res.json({ unix: Date.now(), utc: (new Date()).toUTCString() });
+});
 
-// your first API endpoint... 
-app.get("/api/timestamp/:date?", function (req, res) {
+app.get("/api/timestamp/:date", function (req, res) {
   var timeStamp = req.params.date;
 
   try{
     var date = new Date();
 
-    if(timeStamp){
-
-      if(!isNaN(timeStamp)){
-        date = new Date(parseInt(timeStamp) * 1000);
-      }else{
-        date = new Date(timeStamp);  
-      }
+    if(!isNaN(timeStamp)){
+      date = new Date(parseInt(timeStamp));
+    }else{
+      date = new Date(timeStamp);  
     }
 
-    res.json({ unix: date.getTime() / 1000, utc: date.toUTCString()});
+    res.json({ unix: date.valueOf(), utc: date.toUTCString()});
   }catch{
     res.json({ error : "Invalid Date" });
   }
